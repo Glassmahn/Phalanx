@@ -10,9 +10,8 @@ app.use(express.json());
 const engine = createEngine();
 const approvalRequests = new Map<string, ApprovalRequest>();
 
-engine.on("approvalNeeded", (req) => {
+engine.on("approvalNeeded", (req: ApprovalRequest) => {
   approvalRequests.set(req.id, req);
-  // In production, send to frontend via SSE/WebSocket
   console.log("[Server] Approval needed:", req.id);
 });
 

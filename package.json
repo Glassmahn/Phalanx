@@ -2,6 +2,7 @@
   "name": "phalanx",
   "version": "0.1.0",
   "private": true,
+  "workspaces": ["packages/*", "backend"],
   "scripts": {
     "move:build": "sui move build --path move",
     "move:test": "sui move test --path move",
@@ -9,6 +10,9 @@
     "sdk:build": "cd packages/sdk && npm run build",
     "backend:dev": "cd backend && npm run dev",
     "frontend:dev": "cd frontend && npm run dev",
-    "demo": "tsx scripts/demo.ts"
+    "demo": "tsx scripts/demo.ts",
+    "install:all": "npm install",
+    "typecheck": "tsc --noEmit -p packages/sdk/tsconfig.json && tsc --noEmit -p backend/tsconfig.json",
+    "precommit": "npm run typecheck"
   }
 }

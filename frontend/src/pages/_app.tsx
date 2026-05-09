@@ -1,13 +1,18 @@
 import type { AppProps } from "next/app";
-import { SuiClientProvider, WalletProvider } from "@mysten/dapp-kit";
-import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
+import {
+  SuiClientProvider,
+  WalletProvider,
+  createNetworkConfig,
+} from "@mysten/dapp-kit";
 import "@mysten/dapp-kit/dist/index.css";
 
-const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+const { networkConfig } = createNetworkConfig({
+  testnet: { url: "https://fullnode.testnet.sui.io" },
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SuiClientProvider networks={{ testnet: client }} defaultNetwork="testnet">
+    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
       <WalletProvider autoConnect>
         <Component {...pageProps} />
       </WalletProvider>

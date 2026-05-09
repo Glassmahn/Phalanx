@@ -40,9 +40,9 @@ export function createEngine(): CoordinationEngine {
     keypair
   );
 
-  engine.on("error", (err) => console.error("[Coord]", err));
-  engine.on("phaseChange", (phase) => console.log("[Coord] Phase:", phase));
-  engine.on("memoryWritten", (blobId) => console.log("[Coord] Palace blob:", blobId));
+  engine.on("error", (err: Error) => console.error("[Coord]", err));
+  engine.on("phaseChange", (phase: string) => console.log("[Coord] Phase:", phase));
+  engine.on("memoryWritten", (blobId: string) => console.log("[Coord] Palace blob:", blobId));
 
   return engine;
 }

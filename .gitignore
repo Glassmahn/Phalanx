@@ -5,3 +5,5 @@ build/
 .walrus/
 *.log
 .DS_Store
+.next/
+*.tsbuildinfo

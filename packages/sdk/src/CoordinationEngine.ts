@@ -45,6 +45,7 @@ export class CoordinationEngine {
   private loci: Locus[] = [];
   private currentPhalanx: PhalanxOnChain | null = null;
   private pendingApproval: ApprovalRequest | null = null;
+  private lastBlobId: string = "";
 
   constructor(
     phalanxClient: PhalanxClient,
@@ -147,6 +148,7 @@ export class CoordinationEngine {
     );
     this.loci = loci;
 
+    this.lastBlobId = blobId;
     await this.phalanxClient.updatePalace(
       this.phalanxId,
       new TextEncoder().encode(blobId),
@@ -262,7 +264,7 @@ export class CoordinationEngine {
     this.setPhase("memory_write");
     await this.writeLocus("praxistes", "executing", execution);
 
-    this.emit("memoryWritten", this.currentPhalanx?.palace_blob_id ?? "unknown");
+    this.emit("memoryWritten", this.lastBlobId);
     this.pendingApproval = null;
     this.setPhase("idle");
   }

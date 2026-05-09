@@ -145,7 +145,7 @@ export class PhalanxClient {
           sender: event.sender,
           type: event.type,
           parsedJson: event.parsedJson as Record<string, unknown>,
-          timestampMs: event.timestampMs,
+          timestampMs: event.timestampMs ? Number(event.timestampMs) : undefined,
         };
         onEvent(data);
       },
