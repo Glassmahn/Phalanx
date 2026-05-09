@@ -1,0 +1,14 @@
+{
+  "name": "phalanx",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "move:build": "sui move build --path move",
+    "move:test": "sui move test --path move",
+    "move:publish": "sui client publish --path move --gas-budget 100000000",
+    "sdk:build": "cd packages/sdk && npm run build",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:dev": "cd frontend && npm run dev",
+    "demo": "tsx scripts/demo.ts"
+  }
+}
