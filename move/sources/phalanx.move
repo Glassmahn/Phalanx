@@ -1,23 +1,21 @@
 module phalanx::phalanx {
     use sui::object::{Self, UID, ID};
-    use sui::transfer;
+    use sui::transfer::{Self, public_transfer};
     use sui::tx_context::{Self, TxContext};
     use sui::event;
     use std::vector;
 
-    use phalanx::agent::{Self, Agent, Role};
-    use phalanx::events;
+    use phalanx::agent;
 
     const ENotCommander: u64 = 0;
     const EAgentNotFound: u64 = 1;
     const EInvalidThreshold: u64 = 2;
-    const EPhalanxAlreadyExists: u64 = 3;
 
     const MAX_AGENTS: u64 = 16;
     const MIN_THRESHOLD: u8 = 1;
     const MAX_THRESHOLD: u8 = 10;
 
-    struct Phalanx has key {
+    struct Phalanx has key, store {
         id: UID,
         commander: address,
         agents: vector<ID>,
@@ -50,20 +48,33 @@ module phalanx::phalanx {
         epoch: u64,
     }
 
+    #[test_only]
+    public fun init_for_testing(ctx: &mut TxContext): Phalanx {
+        let commander = tx_context::sender(ctx);
+        Phalanx {
+            id: object::new(ctx),
+            commander,
+            agents: vector[],
+            palace_blob_id: vector[],
+            guardian_threshold: 5,
+            created_at: tx_context::epoch(ctx),
+        }
+    }
+
     fun init(ctx: &mut TxContext) {
         let commander = tx_context::sender(ctx);
         let phalanx = Phalanx {
             id: object::new(ctx),
             commander,
-            agents: vector::empty(),
-            palace_blob_id: vector::empty(),
+            agents: vector[],
+            palace_blob_id: vector[],
             guardian_threshold: 5,
             created_at: tx_context::epoch(ctx),
         };
         transfer::transfer(phalanx, commander);
     }
 
-    public entry fun add_agent(
+    public fun add_agent(
         phalanx: &mut Phalanx,
         role_variant: u8,
         ctx: &mut TxContext,
@@ -73,7 +84,7 @@ module phalanx::phalanx {
 
         let agent = agent::create_agent(role_variant, ctx);
         let agent_id = agent::get_agent_id(&agent);
-        transfer::transfer(agent, phalanx.commander);
+        public_transfer(agent, phalanx.commander);
         vector::push_back(&mut phalanx.agents, agent_id);
 
         event::emit(AgentAdded {
@@ -84,7 +95,7 @@ module phalanx::phalanx {
         });
     }
 
-    public entry fun remove_agent(
+    public fun remove_agent(
         phalanx: &mut Phalanx,
         agent_id: ID,
         ctx: &TxContext,
@@ -114,7 +125,7 @@ module phalanx::phalanx {
         });
     }
 
-    public entry fun update_palace(
+    public fun update_palace(
         phalanx: &mut Phalanx,
         new_blob_id: vector<u8>,
         ctx: &TxContext,
@@ -128,7 +139,7 @@ module phalanx::phalanx {
         });
     }
 
-    public entry fun set_guardian_threshold(
+    public fun set_guardian_threshold(
         phalanx: &mut Phalanx,
         new_threshold: u8,
         ctx: &TxContext,

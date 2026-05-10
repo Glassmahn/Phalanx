@@ -1,6 +1,5 @@
 module phalanx::agent {
     use sui::object::{Self, UID, ID};
-    use sui::transfer;
     use sui::tx_context::{Self, TxContext};
     use sui::event;
 
@@ -33,7 +32,7 @@ module phalanx::agent {
         let agent = Agent {
             id: object::new(ctx),
             role,
-            personal_blob_id: vector::empty(),
+            personal_blob_id: vector[],
         };
         event::emit(AgentCreated {
             agent_id: object::id(&agent),
@@ -48,6 +47,10 @@ module phalanx::agent {
             || variant == ROLE_LOGISTES
             || variant == ROLE_PRAXISTES
             || variant == ROLE_PHYLAX
+    }
+
+    public fun get_role(agent: &Agent): &Role {
+        &agent.role
     }
 
     public fun get_role_variant(role: &Role): u8 {
